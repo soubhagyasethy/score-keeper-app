@@ -19,10 +19,87 @@
     <script type="text/babel">
       let score = 0;
       let wicket = 0;
+      let ballWiseResult = [];
+      let hit = 0;
+      let inputRef = React.createRef();
 
-      function clickOne() {
-        alert("clicked");
+      function addScore(num) {
+        hit = num;
+        rootElement.render(<App />);
+        console.log(hit);
       }
+
+      function addWicket() {
+        hit = "W";
+        rootElement.render(<App />);
+        console.log(hit);
+      }
+
+      function handleSubmit(e) {
+        e.preventDefault();
+        if (hit === "W") {
+          wicket += 1;
+        } else {
+          score += hit;
+        }
+
+        ballWiseResult.unshift(
+          <span>{`${hit}, ${inputRef.current.value}`}</span>
+        );
+
+        hit = 0;
+        inputRef.current.value = "";
+        rootElement.render(<App />);
+        {
+          /*if we remove this line and write in the input and click submit the first input will not get cleared but the second input will be cleared. But it should not get clear as the component is not re-rendering again as we removed rootElement.render line. This is happening because the ref is not dependent on the component, it can directly access or change the dom node. This is called uncontrolled input. React doesn't reccomend this*/
+        }
+        console.log(inputRef.current.value);
+      }
+
+      const ScoreButtons = () => {
+        return (
+          <div>
+            <button onClick={() => addScore(0)}>0</button>
+            <button onClick={() => addScore(1)}>1</button>
+            {/* inline arrow function. If we call the function directly ({addScore(1)}) it will result in an infinite loop */}
+            <button onClick={() => addScore(2)}>2</button>
+            <button onClick={() => addScore(3)}>3</button>
+            <button onClick={() => addScore(4)}>4</button>
+            <button onClick={() => addScore(5)}>5</button>
+            <button onClick={() => addScore(6)}>6</button>
+            <button onClick={addWicket}>wicket</button>
+            {/* refrence to the function */}
+          </div>
+        );
+      };
+
+      const Result = () => {
+        return (
+          <div>
+            {ballWiseResult.map((res, index) => {
+              return (
+                <>
+                  {index % 6 === 0 ? <br /> : null}
+                  <span key={index}>
+                    {res === 0 ? <strong>.</strong> : res}
+                  </span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                </>
+              );
+            })}
+          </div>
+        );
+      };
+
+      const Form = () => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <input value={hit} />
+            <input ref={inputRef} />
+            <button>Submit</button>
+          </form>
+        );
+      };
 
       const App = () => (
         <div>
@@ -30,14 +107,15 @@
           <h2>
             SCORE: {score} / {wicket}
           </h2>
+          <ScoreButtons />
+          {/*<Result />*/}
+          <br />
+          <Form />
+          <hr />
 
-          <button onClick={clickOne}>1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>4</button>
-          <button>5</button>
-          <button>6</button>
-          <button>wicket</button>
+          {ballWiseResult.map((res, i) => (
+            <p key={i}>{res}</p>
+          ))}
         </div>
       );
 
