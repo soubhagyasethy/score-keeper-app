@@ -20,8 +20,9 @@
       let score = 0;
       let wicket = 0;
 
-      function clickOne() {
-        alert("clicked");
+      function addScore(num) {
+        score += num;
+        rootElement.render(<App />);
       }
 
       const App = () => (
@@ -30,13 +31,15 @@
           <h2>
             SCORE: {score} / {wicket}
           </h2>
-
-          <button onClick={clickOne}>1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>4</button>
-          <button>5</button>
-          <button>6</button>
+          {/*<button onClick={addScore(1)}>1</button>*/}
+          {/* function call, calling the function directly from jsx will result in an infinite loop */}
+          <button onClick={() => addScore(1)}>1</button>{" "}
+          {/*reference to the function */}
+          <button onClick={() => addScore(2)}>2</button> {/* inline function */}
+          <button onClick={() => addScore(3)}>3</button>
+          <button onClick={() => addScore(4)}>4</button>
+          <button onClick={() => addScore(5)}>5</button>
+          <button onClick={() => addScore(6)}>6</button>
           <button>wicket</button>
         </div>
       );
